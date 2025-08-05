@@ -1,0 +1,11 @@
+services:
+  xg-nav:
+    image: ghcr.io/verkyer/nav:latest
+    container_name: xg-nav
+    ports:
+      - "26180:80"
+    environment:
+      - CARD_CONTENT=0
+    restart: unless-stopped
+    volumes:
+      - ./data:/usr/share/nginx/html/data
