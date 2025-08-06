@@ -1,0 +1,13 @@
+services:
+  xg-nav:
+    image: ghcr.io/verkyer/nav:latest
+    container_name: xg-nav
+    ports:
+      - "26180:80"  # 可自定义端口
+    environment:
+      # - SITE_TITLE=网站标题
+      # - SITE_DESCRIPTION=网站描述
+      - CARD_CONTENT=0  # 0=显示描述信息，1=显示链接URL
+    restart: unless-stopped
+    volumes:
+      - ./data:/usr/share/nginx/html/data
