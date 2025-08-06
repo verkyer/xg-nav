@@ -1,4 +1,4 @@
-name: 构建和推送 Docker 镜像到 Docker Hub
+name: 构建和推送 Docker 镜像到 GitHub Container Registry (备选方案)
 
 on:
   workflow_dispatch: # 只允许手动触发
@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
+      packages: write
 
     steps:
       - name: Checkout code
@@ -15,12 +16,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Login to Docker Hub
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }} # 使用 PAT
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         id: buildx
@@ -48,7 +49,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.get_latest_release.outputs.RELEASE_TAG }}
-            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
+            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.get_latest_release.outputs.RELEASE_TAG }}
+            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
