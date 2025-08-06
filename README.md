@@ -26,7 +26,7 @@
 ```yaml
 services:
   xg-nav:
-    image: ghcr.io/verkyer/xg-nav:latest
+    image: verky/xg-nav:latest
     container_name: xg-nav
     ports:
       - "26180:80"  # 可自定义端口
@@ -48,7 +48,7 @@ docker run -d \
   -p 26180:80 \
   -v $(pwd)/data/data:/usr/share/nginx/html/data \
   --restart unless-stopped \
-  ghcr.io/verkyer/xg-nav:latest
+  verky/xg-nav:latest
 ```
 `$(pwd)/data` 替换为实际路径
 
@@ -63,7 +63,7 @@ docker run -d \
   -e CARD_CONTENT=0 \ # 0=显示描述信息，1=显示链接URL
   -v $(pwd)/data:/usr/share/nginx/html/data \
   --restart unless-stopped \
-  ghcr.io/verkyer/xg-nav:latest
+  verky/xg-nav:latest
 ```
 
 ## HTML 部署
