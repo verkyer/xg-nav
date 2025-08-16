@@ -20,7 +20,7 @@ jobs:
         with:
           registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }} # 使用 PAT
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Set up Docker Buildx
         id: buildx
@@ -28,17 +28,16 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64 # 指定需要构建的平台
 
-      - name: Get Latest GitHub Release
+      - name: Get Latest Release Tag
         id: get_latest_release
         run: |
-          RELEASE_TAG=$(gh release list --limit 1 --json tagName | jq -r '.[0].tagName')
-          if [[ -z "$RELEASE_TAG" ]]; then
-            echo "No release found, using default tag v1.0.0"
-            RELEASE_TAG="v1.0.0"
-          fi
-          echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_OUTPUT
-        env:
-          GH_TOKEN: ${{ github.token }}
+          LATEST_TAG=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name // "v1.0.0"')
+          echo "RELEASE_TAG=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "Latest release tag: $LATEST_TAG"
+
+      - name: Pre-pull Base Image
+        run: |
+          docker pull nginx:alpine
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v3
@@ -52,3 +51,7 @@ jobs:
             docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+          provenance: false
+          sbom: false
