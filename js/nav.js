@@ -157,7 +157,12 @@ function render(list) {
 function handleCardClick(e) {
   const card = e.target.closest('li[data-url]');
   if (!card) return;
-  if (e.target.tagName === 'A') return;
+  
+  // 如果点击的是A标签或其子元素，阻止默认行为和事件冒泡
+  if (e.target.closest('a')) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
   
   window.open(card.dataset.url, '_blank');
 }
