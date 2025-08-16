@@ -21,7 +21,7 @@ if [ ! -f "/usr/share/nginx/html/data/links.txt" ]; then
     # 如果备份文件不存在，创建默认内容
     cat > /usr/share/nginx/html/data/links.txt << 'EOF'
 小鸽志,个人技术博客分享,https://www.xiaoge.org,博客
-HKVPS,香港VPS服务商,https://hkvps.org,博客
+HKVPS,优质VPS推荐,https://hkvps.org,博客
 DockerApps,Docker应用程序集合,https://dockerapps.com,博客
 huanhq,技术大佬的blog,https://www.huanhq.com,博客
 hicane,Cane's Blog,https://hicane.com,博客

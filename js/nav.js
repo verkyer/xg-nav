@@ -128,7 +128,12 @@ function render(list) {
       const link = links[i];
       sections.push(
         '<li data-url="', link.url, '">',
-        '<a href="', link.url, '" target="_blank" rel="noopener" class="card-title">', link.title, '</a>',
+        '<a href="', link.url, '" target="_blank" rel="noopener" class="card-title">',
+        '<div class="favicon-container">',
+        '<img class="favicon" src="" alt="">',
+        '</div>',
+        '<span class="link-text">', link.title, '</span>',
+        '</a>',
         '<div class="url">', showUrl ? link.url : link.description, '</div>',
         '</li>'
       );
@@ -143,6 +148,9 @@ function render(list) {
     wrap.addEventListener('click', handleCardClick);
     domCache.cardClickHandlerAdded = true;
   }
+  
+  // 异步加载favicon图标
+  loadFavicons(list);
 }
 
 // 处理卡片点击
@@ -371,5 +379,62 @@ function isValidURL(string) {
     return false;
   } catch (_) {
     return false;
+  }
+}
+
+// 异步加载favicon图标
+function loadFavicons(links) {
+  // 延迟加载favicon，避免影响页面初始渲染
+  setTimeout(() => {
+    const faviconElements = document.querySelectorAll('.favicon');
+    const linkElements = document.querySelectorAll('a[href]');
+    
+    linkElements.forEach((linkElement, index) => {
+      const url = linkElement.getAttribute('href');
+      const faviconImg = linkElement.querySelector('.favicon');
+      
+      if (url && faviconImg) {
+        // 从URL中提取域名
+        const domain = extractDomain(url);
+        if (domain) {
+          // 使用Google的favicon服务
+          const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=16`;
+          
+          // 预加载图片
+          const img = new Image();
+          img.onload = function() {
+            faviconImg.src = faviconUrl;
+            faviconImg.classList.add('loaded');
+          };
+          img.onerror = function() {
+            // 如果Google服务失败，尝试直接获取网站favicon
+            const fallbackUrl = `${domain}/favicon.ico`;
+            const fallbackImg = new Image();
+            fallbackImg.onload = function() {
+              faviconImg.src = fallbackUrl;
+              faviconImg.classList.add('loaded');
+            };
+            fallbackImg.onerror = function() {
+              // 如果都失败了，保持透明状态，但空间仍然预留
+              // 不需要额外操作，favicon容器会保持固定宽度
+            };
+            fallbackImg.src = fallbackUrl;
+          };
+          img.src = faviconUrl;
+        }
+      }
+    });
+  }, 100); // 延迟100ms加载
+}
+
+// 从URL中提取域名
+function extractDomain(url) {
+  try {
+    const urlObj = new URL(url.startsWith('http') ? url : 'https://' + url);
+    return urlObj.hostname;
+  } catch (e) {
+    // 如果URL解析失败，尝试简单的字符串处理
+    const match = url.match(/^(?:https?:\/\/)?(?:www\.)?([^\/?#]+)/);
+    return match ? match[1] : null;
   }
 }
