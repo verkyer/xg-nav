@@ -402,34 +402,58 @@ function loadFavicons(links) {
         // 从URL中提取域名
         const domain = extractDomain(url);
         if (domain) {
-          // 使用Google的favicon服务
-          const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=16`;
-          
-          // 预加载图片
-          const img = new Image();
-          img.onload = function() {
-            faviconImg.src = faviconUrl;
-            faviconImg.classList.add('loaded');
-          };
-          img.onerror = function() {
-            // 如果Google服务失败，尝试直接获取网站favicon
-            const fallbackUrl = `${domain}/favicon.ico`;
-            const fallbackImg = new Image();
-            fallbackImg.onload = function() {
-              faviconImg.src = fallbackUrl;
-              faviconImg.classList.add('loaded');
-            };
-            fallbackImg.onerror = function() {
-              // 如果都失败了，保持透明状态，但空间仍然预留
-              // 不需要额外操作，favicon容器会保持固定宽度
-            };
-            fallbackImg.src = fallbackUrl;
-          };
-          img.src = faviconUrl;
+          // 首选使用Yandex favicon服务
+          tryLoadYandexFavicon(faviconImg, domain);
         }
       }
     });
   }, 100); // 延迟100ms加载
+}
+
+// 尝试加载Yandex favicon，检测1x1像素图片
+function tryLoadYandexFavicon(faviconImg, domain) {
+  const faviconUrl = `https://favicon.yandex.net/favicon/${domain}`;
+  const img = new Image();
+  
+  img.onload = function() {
+    // 检查图片尺寸，如果是1x1像素则显示emoji
+    if (img.naturalWidth === 1 && img.naturalHeight === 1) {
+      // 显示🌐 emoji作为默认图标
+      showEmojiIcon(faviconImg);
+    } else {
+      // 正常显示favicon
+      faviconImg.src = faviconUrl;
+      faviconImg.classList.add('loaded');
+    }
+  };
+  
+  img.onerror = function() {
+    // Yandex服务失败，显示emoji图标
+    showEmojiIcon(faviconImg);
+  };
+  
+  img.src = faviconUrl;
+}
+
+// 显示emoji图标
+function showEmojiIcon(faviconImg) {
+  // 创建一个包含emoji的canvas
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 16;
+  canvas.height = 16;
+  
+  // 设置字体和样式
+  ctx.font = '12px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  
+  // 绘制🌐 emoji
+  ctx.fillText('🌐', 8, 8);
+  
+  // 将canvas转换为data URL并设置为图片源
+  faviconImg.src = canvas.toDataURL();
+  faviconImg.classList.add('loaded');
 }
 
 // 从URL中提取域名
