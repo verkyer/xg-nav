@@ -15,7 +15,8 @@ async function loadSiteConfig() {
     SITE_TITLE: 'XG🧭导航',
     SITE_DESCRIPTION: '一个简洁、纯静态的个人导航站',
     COPYRIGHT: '© 2025 <a href="https://github.com/verkyer/xg-nav" target="_blank">XG-Nav</a>',
-    CARD_CONTENT: 0
+    CARD_CONTENT: 0,
+    SHOW_FAVICON: 1
   };
   
   let config = defaultConfig;
@@ -389,6 +390,16 @@ function isValidURL(string) {
 
 // 异步加载favicon图标
 function loadFavicons(links) {
+  // 检查是否启用favicon显示
+  if (siteConfig.SHOW_FAVICON === 0) {
+    // 如果禁用favicon，隐藏所有favicon元素
+    const faviconElements = document.querySelectorAll('.favicon');
+    faviconElements.forEach(favicon => {
+      favicon.style.display = 'none';
+    });
+    return;
+  }
+  
   // 延迟加载favicon，避免影响页面初始渲染
   setTimeout(() => {
     const faviconElements = document.querySelectorAll('.favicon');

@@ -35,6 +35,7 @@ services:
       # - SITE_DESCRIPTION=网站描述
       # - COPYRIGHT=版权信息，支持HTML（留个项目地址呗~）
       - CARD_CONTENT=0  # 0=显示描述信息，1=显示链接URL
+      # - SHOW_FAVICON=1  # 1=显示favicon图标，0=不显示
     restart: unless-stopped
     volumes:
       - ./data:/usr/share/nginx/html/data
@@ -61,6 +62,7 @@ docker run -d \
   -e SITE_DESCRIPTION="网站描述" \
   -e COPYRIGHT="版权信息，支持HTML" \
   -e CARD_CONTENT=0 \ # 0=显示描述信息，1=显示链接URL
+  -e SHOW_FAVICON=1 \ # 1=显示favicon图标，0=不显示
   -v $(pwd)/data:/usr/share/nginx/html/data \
   --restart unless-stopped \
   verky/xg-nav:latest
@@ -78,6 +80,7 @@ docker run -d \
 - `SITE_DESCRIPTION`:"网站描述"
 - `COPYRIGHT`:"版权信息，支持HTML"
 - `CARD_CONTENT`: 0 （0=显示描述信息，1=显示链接URL）
+- `SHOW_FAVICON`: 1 （1=显示favicon图标，0=不显示）
 
 **配置优先级**：环境变量 > config.json > 内置默认值
 
