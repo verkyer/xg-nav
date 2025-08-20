@@ -392,12 +392,12 @@ function isValidURL(string) {
 function loadFavicons(links) {
   // 检查是否启用favicon显示
   if (siteConfig.SHOW_FAVICON === 0) {
-    // 如果禁用favicon，隐藏所有favicon元素
-    const faviconElements = document.querySelectorAll('.favicon');
-    faviconElements.forEach(favicon => {
-      favicon.style.display = 'none';
-    });
+    // 如果禁用favicon，给body添加hide-favicon类来隐藏所有favicon容器
+    document.body.classList.add('hide-favicon');
     return;
+  } else {
+    // 如果启用favicon，确保移除hide-favicon类
+    document.body.classList.remove('hide-favicon');
   }
   
   // 延迟加载favicon，避免影响页面初始渲染

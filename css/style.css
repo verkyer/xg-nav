@@ -651,6 +651,11 @@ li a:hover {
   justify-content: flex-start;
 }
 
+/* 当隐藏favicon时，完全隐藏favicon容器 */
+body.hide-favicon .favicon-container {
+  display: none;
+}
+
 .favicon {
   width: 16px;
   height: 16px;
