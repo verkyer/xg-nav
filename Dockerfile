@@ -22,7 +22,8 @@ RUN chmod +x /entrypoint.sh
 ENV SITE_TITLE="XG🧭导航" \
     SITE_DESCRIPTION="一个简洁、纯静态的个人导航站" \
     COPYRIGHT="© 2025 <a href='https://github.com/verkyer/xg-nav' target='_blank'>XG-Nav</a>" \
-    CARD_CONTENT=0
+    CARD_CONTENT=0 \
+    SHOW_FAVICON=1
 
 # 暴露端口
 EXPOSE 80

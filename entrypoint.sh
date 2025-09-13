@@ -6,7 +6,8 @@ cat > /usr/share/nginx/html/config.json << EOF
   "SITE_TITLE": "${SITE_TITLE:-XG🧭导航}",
   "SITE_DESCRIPTION": "${SITE_DESCRIPTION:-一个简洁、纯静态的个人导航站}",
   "COPYRIGHT": "${COPYRIGHT:-© 2025 <a href='https://github.com/verkyer/xg-nav' target='_blank'>XG-Nav</a>}",
-  "CARD_CONTENT": ${CARD_CONTENT:-1}
+  "CARD_CONTENT": ${CARD_CONTENT:-1},
+  "SHOW_FAVICON": ${SHOW_FAVICON:-1}
 }
 EOF
 
