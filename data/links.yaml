@@ -1,0 +1,39 @@
+博客:
+  小鸽志: 
+    url: https://www.xiaoge.org
+    desc: 个人技术博客分享
+    icon: # 留空则使用默认的 favicon（Yandex）
+  DockerApps:
+    url: https://dockerapps.com
+    desc: Docker应用程序集合
+    icon: emoji:🐳 #可以使用emoji
+  GitHub:
+    url: https://github.com
+    desc: 全球最大的代码托管平台
+    icon: github #使用本地图标 在/ico目录下，可以不用精确文件名
+  huanhq:
+    url: https://www.huanhq.com
+    desc: 技术大佬的blog
+  hicane:
+    url: https://hicane.com
+    desc: Cane's Blog
+    icon: # 留空使用默认 favicon
+
+购物:
+  淘宝:
+    url: https://www.taobao.com
+    desc: 中国最大购物平台
+    icon: url:https://www.taobao.com/favicon.ico # 远程图片
+  京东:
+    url: jd.com
+    icon: url:https://www.jd.com/favicon.ico
+    desc: 中国最大购物平台
+  Amazon:
+    url: https://www.amazon.com
+    desc: 全球最大购物平台
+  天猫:
+    url: https://www.tmall.com
+    desc: 品牌商城购物平台
+  拼多多:
+    url: https://www.pinduoduo.com
+    desc: 社交电商购物平台

@@ -20,3 +20,6 @@ Desktop.ini
 *.bak
 *.backup
 *.old
+
+# Trae IDE 临时文档（不上传）
+.trae/

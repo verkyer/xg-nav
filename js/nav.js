@@ -61,21 +61,38 @@ async function loadSiteConfig() {
 // 加载链接数据
 async function loadLinks() {
   const navContainer = document.getElementById('nav-container');
-  
   try {
-    // 使用更轻量的加载提示
     navContainer.innerHTML = '<div class="loading">⚡</div>';
-    
-    // 移除缓存破坏参数，让浏览器缓存生效
+    const yamlResp = await fetch('data/links.yaml');
+    if (yamlResp.ok) {
+      const yamlText = await yamlResp.text();
+      let parsed;
+      try {
+        parsed = jsyaml.load(yamlText);
+      } catch (_) {
+        parsed = null;
+      }
+      const data = parseYamlV2(parsed);
+      if (data && data.length) {
+        allLinks = data;
+        requestAnimationFrame(() => render(data));
+        return;
+      }
+    }
+    await loadLinksFromTxt(navContainer);
+  } catch (_) {
+    await loadLinksFromTxt(navContainer);
+  }
+}
+
+async function loadLinksFromTxt(navContainer) {
+  try {
     const response = await fetch('data/links.txt');
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
-    
     const txt = await response.text();
     const lines = txt.trim().split('\n').filter(l => l.trim() && !l.startsWith('#'));
-    
-    // 优化数据处理，减少内存分配
     const data = [];
     for (let i = 0; i < lines.length; i++) {
       const parts = lines[i].split(',');
@@ -88,16 +105,10 @@ async function loadLinks() {
         });
       }
     }
-    
     allLinks = data;
-    
-    // 使用requestAnimationFrame优化渲染时机
     requestAnimationFrame(() => render(data));
-    
   } catch (e) {
-    console.error('加载链接失败:', e);
-    navContainer.innerHTML = 
-      '<div class="error-message"><p>😢 加载链接失败</p><button onclick="loadLinks()">重试</button></div>';
+    navContainer.innerHTML = '<div class="error-message"><p>😢 加载链接失败</p><button onclick="loadLinks()">重试</button></div>';
   }
 }
 
@@ -170,14 +181,7 @@ function handleCardClick(e) {
 
 // 资源预加载已在HTML中实现
 
-// 预初始化搜索引擎选择器，避免图标延迟
-document.addEventListener('DOMContentLoaded', () => {
-  const searchEngineSelect = document.getElementById('search-engine-select');
-  if (searchEngineSelect) {
-    // 立即设置默认图标，避免等待
-    searchEngineSelect.setAttribute('value', 'bing');
-  }
-});
+ 
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
@@ -224,12 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-  // 激进的并行加载策略
-  const configPromise = loadSiteConfig();
+  const configPromise = loadSiteConfig().then(() => {
+    setupSearch();
+  });
   const linksPromise = loadLinks();
-  
-  // 立即初始化搜索功能，不等待数据加载
-  setupSearch();
   
   // 并行等待所有资源加载完成
   Promise.allSettled([configPromise, linksPromise]).then(results => {
@@ -254,6 +256,25 @@ function setupSearch() {
   const searchClear = domCache.searchClear || 
     (domCache.searchClear = document.getElementById('search-clear'));
   
+  while (searchEngineSelect.firstChild) searchEngineSelect.removeChild(searchEngineSelect.firstChild);
+  const engines = Array.isArray(siteConfig.SEARCH_ENGINES) && siteConfig.SEARCH_ENGINES.length > 0
+    ? siteConfig.SEARCH_ENGINES
+    : [
+        { name: 'Bing', engine: 'bing', url: 'https://www.bing.com/search?q=' },
+        { name: '百度', engine: 'baidu', url: 'https://www.baidu.com/s?wd=' },
+        { name: 'Google', engine: 'google', url: 'https://www.google.com/search?q=' },
+        { name: 'DuckDuckGo', engine: 'duckduckgo', url: 'https://duckduckgo.com/?q=' },
+        { name: 'GitHub', engine: 'github', url: 'https://github.com/search?q=' },
+        { name: 'Docker', engine: 'docker', url: 'https://hub.docker.com/search?q=' }
+      ];
+  for (let i = 0; i < engines.length; i++) {
+    const opt = document.createElement('option');
+    opt.value = engines[i].engine;
+    opt.textContent = engines[i].name;
+    opt.dataset.url = engines[i].url;
+    searchEngineSelect.appendChild(opt);
+  }
+
   // 搜索引擎切换
   searchEngineSelect.addEventListener('change', (e) => {
     const selectedOption = e.target.selectedOptions[0];
@@ -272,28 +293,31 @@ function setupSearch() {
     searchInput.focus();
   });
   
-  // 立即初始化搜索引擎图标，避免延迟
-  const initialOption = searchEngineSelect.selectedOptions[0];
-  if (initialOption) {
-    searchEngineSelect.setAttribute('value', initialOption.value);
-  }
-  
-  // 恢复保存的搜索引擎选择
-  const savedSearchEngine = localStorage.getItem('searchEngine');
-  if (savedSearchEngine) {
+  const initialSaved = localStorage.getItem('searchEngine');
+  if (initialSaved) {
     try {
-      const saved = JSON.parse(savedSearchEngine);
-      // 查找并选择保存的搜索引擎
+      const saved = JSON.parse(initialSaved);
       const savedOption = Array.from(searchEngineSelect.options).find(option => option.value === saved.engine);
       if (savedOption) {
         searchEngineSelect.value = saved.engine;
         searchEngineSelect.setAttribute('value', saved.engine);
         currentSearchEngine = saved;
       }
-    } catch (e) {
-      console.error('恢复搜索引擎选择失败:', e);
+    } catch (_) {}
+  }
+  if (!searchEngineSelect.value) {
+    const def = siteConfig.DEFAULT_ENGINE || 'bing';
+    const defOption = Array.from(searchEngineSelect.options).find(option => option.value === def) || searchEngineSelect.options[0];
+    if (defOption) {
+      searchEngineSelect.value = defOption.value;
+      searchEngineSelect.setAttribute('value', defOption.value);
+      const sel = engines.find(e => e.engine === defOption.value) || engines[0];
+      currentSearchEngine = { name: sel.name, engine: sel.engine, url: sel.url };
     }
   }
+  
+  // 恢复保存的搜索引擎选择
+  
   
   // 搜索按钮点击
   searchButton.addEventListener('click', () => performSearch());
@@ -477,4 +501,167 @@ function extractDomain(url) {
     const match = url.match(/^(?:https?:\/\/)?(?:www\.)?([^\/?#]+)/);
     return match ? match[1] : null;
   }
+}
+
+// 解析 YAML v2（分类为键，短字段）
+function parseYamlV2(obj) {
+  if (!obj || typeof obj !== 'object') return [];
+  // 兼容旧格式：数组 links
+  if (Array.isArray(obj.links)) {
+    const out = [];
+    const list = obj.links;
+    for (let i = 0; i < list.length; i++) {
+      const it = list[i] || {};
+      if (it.title && it.url) {
+        out.push({
+          title: String(it.title).trim(),
+          description: String(it.description || '').trim(),
+          url: normalizeUrl(String(it.url).trim()),
+          category: String(it.category || '未分类').trim()
+        });
+      }
+    }
+    return out;
+  }
+  // v2：顶层分类为键
+  const out = [];
+  for (const category in obj) {
+    const section = obj[category];
+    if (!section || typeof section !== 'object') continue;
+    for (const title in section) {
+      if (title === 'c-icon' || title === '_cicon' || title === '_category_icon') continue;
+      const val = section[title];
+      if (typeof val === 'string') {
+        out.push({
+          title: title.trim(),
+          description: '',
+          url: normalizeUrl(val.trim()),
+          category: category.trim(),
+          icon: undefined
+        });
+      } else if (val && typeof val === 'object') {
+        const url = normalizeUrl(String(val.url || '').trim());
+        if (!url) continue;
+        out.push({
+          title: title.trim(),
+          description: String(val.desc || val.description || '').trim(),
+          url,
+          category: category.trim(),
+          icon: val.icon
+        });
+      }
+    }
+  }
+  return out;
+}
+
+function normalizeUrl(u) {
+  if (!u) return '';
+  if (u.startsWith('http://') || u.startsWith('https://')) return u;
+  return 'http://' + u;
+}
+
+// 加载自定义图标或回退到favicon
+function loadFavicons(list) {
+  if (siteConfig.SHOW_FAVICON === 0) {
+    document.body.classList.add('hide-favicon');
+    return;
+  } else {
+    document.body.classList.remove('hide-favicon');
+  }
+  setTimeout(() => {
+    const linkElements = document.querySelectorAll('a[href]');
+    linkElements.forEach((linkElement, index) => {
+      const url = linkElement.getAttribute('href');
+      const faviconImg = linkElement.querySelector('.favicon');
+      if (!faviconImg) return;
+      const linkData = list[index];
+      const iconSpec = (linkData && linkData.icon) || undefined;
+      if (iconSpec) {
+        resolveIconToImg(faviconImg, iconSpec, url);
+      } else {
+        const domain = extractDomain(url);
+        if (domain) tryLoadYandexFavicon(faviconImg, domain);
+      }
+    });
+  }, 100);
+}
+
+function resolveIconToImg(img, iconSpec, linkUrl) {
+  if (!iconSpec) return;
+  const s = String(iconSpec).trim();
+  if (s.toLowerCase().startsWith('url:')) {
+    const raw = s.slice(4).trim();
+    const src = (raw.startsWith('http://') || raw.startsWith('https://')) ? raw : normalizeUrl(raw);
+    img.src = src;
+    img.classList.add('loaded');
+    return;
+  }
+  // inline svg
+  if (typeof iconSpec === 'string' && s.startsWith('svg:')) {
+    const svg = s.slice(4);
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    img.src = url;
+    img.classList.add('loaded');
+    return;
+  }
+  // emoji: 前缀支持和单字符支持
+  if (typeof iconSpec === 'string') {
+    const m = s.match(/^emoji:(.+)$/);
+    if (m && m[1]) {
+      showEmojiCustom(img, m[1]);
+      return;
+    }
+    if (!s.includes('/') && !/\.(png|svg|ico|jpg)$/i.test(s) && s.length <= 4) {
+      // 简单判断为 emoji
+      showEmojiCustom(img, s);
+      return;
+    }
+  }
+  // remote url or domain/path
+  if (s.includes('/') || s.includes('.')) {
+    const isRemote = s.startsWith('http://') || s.startsWith('https://') || /\w+\./.test(s);
+    const src = isRemote ? normalizeUrl(s) : s;
+    if (isRemote) {
+      img.src = src;
+      img.classList.add('loaded');
+      return;
+    }
+  }
+  // local name or file
+  const name = s;
+  const hasExt = /\.(png|svg|ico|jpg)$/i.test(name);
+  if (hasExt) {
+    img.src = 'ico/' + name;
+    img.classList.add('loaded');
+    return;
+  }
+  const exts = ['png', 'svg', 'ico', 'jpg'];
+  for (let i = 0; i < exts.length; i++) {
+    const candidate = 'ico/' + name + '.' + exts[i];
+    // 尝试加载，失败则继续
+    const test = new Image();
+    test.onload = () => {
+      img.src = candidate;
+      img.classList.add('loaded');
+    };
+    test.onerror = () => {};
+    test.src = candidate;
+    // 找到第一个成功的即可
+    break;
+  }
+}
+
+function showEmojiCustom(faviconImg, emoji) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 16;
+  canvas.height = 16;
+  ctx.font = '12px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(emoji, 8, 8);
+  faviconImg.src = canvas.toDataURL();
+  faviconImg.classList.add('loaded');
 }

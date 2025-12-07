@@ -9,6 +9,8 @@ services:
       # - SITE_DESCRIPTION=网站描述
       - CARD_CONTENT=0  # 0=显示描述信息，1=显示链接URL
       # - SHOW_FAVICON=1  # 1=显示favicon图标，0=不显示
+      # - DEFAULT_ENGINE=bing  # 默认搜索引擎
     restart: unless-stopped
     volumes:
       - ./data:/usr/share/nginx/html/data
+      - ./ico:/usr/share/nginx/html/ico  # 用户自定义图标目录

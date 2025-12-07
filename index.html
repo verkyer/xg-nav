@@ -13,14 +13,14 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,san
 </style>
 
 <!-- 预加载关键资源 -->
-<link rel="preload" href="css/style.css?v=1.0.0" as="style">
+<link rel="preload" href="css/style.css?v=1.0.1" as="style">
 <link rel="preload" href="js/nav.js?v=1.0.0" as="script">
 <link rel="preload" href="config.json" as="fetch" crossorigin>
-<link rel="preload" href="data/links.txt" as="fetch" crossorigin>
+<link rel="preload" href="data/links.yaml" as="fetch" crossorigin>
 
 <!-- 异步加载完整CSS -->
-<link rel="stylesheet" href="css/style.css?v=1.0.0" media="print" onload="this.media='all';this.onload=null">
-<noscript><link rel="stylesheet" href="css/style.css?v=1.0.0"></noscript>
+<link rel="stylesheet" href="css/style.css?v=1.0.1" media="print" onload="this.media='all';this.onload=null">
+<noscript><link rel="stylesheet" href="css/style.css?v=1.0.1"></noscript>
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
 </head>
@@ -31,14 +31,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,san
 
 <div class="search-container">
   <div class="search-box">
-    <select class="search-engine-select" id="search-engine-select">
-      <option value="bing" data-url="https://www.bing.com/search?q=">Bing</option>
-      <option value="baidu" data-url="https://www.baidu.com/s?wd=">百度</option>
-      <option value="google" data-url="https://www.google.com/search?q=">Google</option>
-      <option value="duckduckgo" data-url="https://duckduckgo.com/?q=">DuckDuckGo</option>
-      <option value="github" data-url="https://github.com/search?q=">GitHub</option>
-      <option value="docker" data-url="https://hub.docker.com/search?q=">Docker</option>
-    </select>
+    <select class="search-engine-select" id="search-engine-select"></select>
     <div class="search-input-area">
       <input type="text" class="search-input" id="search-input" placeholder="搜索或输入网址..." autocomplete="off">
       <button class="search-clear" id="search-clear" aria-label="清空搜索">
@@ -56,6 +49,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,san
   <div class="search-results-count" id="search-results-count"></div>
 </div><main id="nav-container"><div class="loading">⚡ 加载中...</div></main><footer><small></small></footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js" defer></script>
   <script src="js/nav.js?v=1.0.0" defer></script>
 </body>
 </html>

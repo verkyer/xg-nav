@@ -26,7 +26,7 @@
 ```yaml
 services:
   xg-nav:
-    image: verky/xg-nav:latest
+    image: ghcr.io/verkyer/nav:latest
     container_name: xg-nav
     ports:
       - "26180:80"  # 可自定义端口
@@ -36,9 +36,11 @@ services:
       # - COPYRIGHT=版权信息，支持HTML（留个项目地址呗~）
       - CARD_CONTENT=0  # 0=显示描述信息，1=显示链接URL
       # - SHOW_FAVICON=1  # 1=显示favicon图标，0=不显示
+      # - DEFAULT_ENGINE=bing  # 默认搜索引擎
     restart: unless-stopped
     volumes:
       - ./data:/usr/share/nginx/html/data
+      - ./ico:/usr/share/nginx/html/ico  # 自定义图标目录（本地名/文件）
 ```
 
 ### 方式二：直接使用 Docker 命令
@@ -47,9 +49,9 @@ services:
 docker run -d \
   --name xg-nav \
   -p 26180:80 \
-  -v $(pwd)/data/data:/usr/share/nginx/html/data \
+  -v $(pwd)/data:/usr/share/nginx/html/data \
   --restart unless-stopped \
-  verky/xg-nav:latest
+  ghcr.io/verkyer/nav:latest
 ```
 `$(pwd)/data` 替换为实际路径
 
@@ -63,6 +65,7 @@ docker run -d \
   -e COPYRIGHT="版权信息，支持HTML" \
   -e CARD_CONTENT=0 \ # 0=显示描述信息，1=显示链接URL
   -e SHOW_FAVICON=1 \ # 1=显示favicon图标，0=不显示
+  -e DEFAULT_ENGINE=bing \ # 设置默认搜索引擎
   -v $(pwd)/data:/usr/share/nginx/html/data \
   --restart unless-stopped \
   verky/xg-nav:latest
@@ -84,35 +87,58 @@ docker run -d \
 
 **配置优先级**：环境变量 > config.json > 内置默认值
 
-## 链接管理
+## 链接管理（YAML v2）
 
-编辑 `data/links.txt` 文件来管理导航链接，每行一个链接，格式为：
+推荐使用 `data/links.yaml`，以“分类”为键，字段更短：
 
+```yaml
+博客:
+  小鸽志:
+    url: https://www.xiaoge.org
+    desc: 个人技术博客分享
+  DockerApps:
+    url: https://dockerapps.com
+    desc: Docker应用程序集合
+    icon: emoji:🐳
+
+购物:
+  淘宝:
+    url: https://www.taobao.com
+    desc: 中国最大购物平台
+  京东:
+    url: jd.com
+    # icon 留空 → 使用默认 favicon
 ```
-网站名称,描述,URL,分类
-```
 
-**示例**：
-```
-小鸽志,个人技术博客分享,https://www.xiaoge.org,博客
-淘宝,中国最大购物平台,https://www.taobao.com,购物
-GitHub,全球最大代码托管平台,https://github.com,开发工具
-```
+- 链接值为字符串表示仅 URL；对象可写 `url/desc/icon`
+- 不写 `icon` → 使用 favicon 自动抓取
+- URL 不含协议 → 自动补 `http://`
 
-**分类说明**：
-- 支持中文分类名称
-- 相同分类的链接会自动分组显示
-- 如果不指定分类，默认归类为"未分类"
+**兼容迁移**：若存在旧版 `links.txt`，容器首次启动会自动转换为上述结构。
 
-**Docker部署说明**：首次启动容器时，如果映射的 `./data` 目录中没有 `links.txt` 文件，系统会自动创建一个包含示例链接的文件。
+## 搜索与图标
 
-## 搜索功能
+导航站内置搜索支持通过配置选择搜索引擎：
+- 搜索引擎在 `config.json` 中配置：
+  - `SEARCH_ENGINES`: `{ name, engine, url }[]`
+  - `DEFAULT_ENGINE`: 默认引擎，如 `"bing"`
+- 页面下拉由配置动态生成，仍支持本地记忆上次选择
+- 搜索特性：
+  - 🔍 实时搜索：输入关键词即时显示匹配结果
+  - 🎯 多字段匹配：支持按网站名称、描述、分类搜索
+  - ⚡ 快速响应：优化的搜索算法，毫秒级响应
+  - 🔄 智能过滤：自动过滤空白和特殊字符
 
-导航站内置了强大的搜索功能：
-- 🔍 实时搜索：输入关键词即时显示匹配结果
-- 🎯 多字段匹配：支持按网站名称、描述、分类搜索
-- ⚡ 快速响应：优化的搜索算法，毫秒级响应
-- 🔄 智能过滤：自动过滤空白和特殊字符
+**icon 写法与目录**：
+- 本地名：`icon: github`（在 `ico/` 中按顺序尝试 `png→svg→ico→jpg`）
+- 本地文件：`icon: github.svg/png/jpg/ico`（精确匹配）
+- 远程：`icon: https://...` 或 `icon: domain/path.svg`（无协议→`http://`）
+- emoji：`icon: 🧭` 或 `icon: emoji:🧭`
+- 不写 `icon`：默认使用网站 favicon（Yandex 服务）
+
+目录约定：
+- `ico/` 用于用户自定义图标（链接卡片使用）。
+- 内置搜索引擎图标已迁移到 `assets/search/`，页面选择器自动使用，无需用户维护。
 
 ## 主题切换
 
@@ -134,6 +160,14 @@ GitHub,全球最大代码托管平台,https://github.com,开发工具
 部署完成后，访问 `http://localhost:26180` 即可使用导航站。
 
 ## 更新日志
+
+### v1.1.0 (2025.12.07)
+- 调整目录结构：内置搜索引擎图标迁移至 `assets/search/`，`ico/` 作为用户自定义图标目录
+- 修复图标解析：支持 `icon: url:...` 前缀，兼容省略协议自动补全
+- 优化 YAML：添加简洁注释与示例，修复缩进错误导致的加载失败
+- 更新样式与资源：CSS 引用路径改为新目录并提升版本号
+- 完善容器配置：`docker-compose.yml` 新增 `DEFAULT_ENGINE` 环境变量示例、挂载 `ico/` 目录
+- 完善文档：README 同步目录约定、图标写法与 YAML v2 示例
 
 ### v1.0.5 (2025.09.13)
 - 🐛 修复Docker部署中SHOW_FAVICON环境变量无法生效的问题

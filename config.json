@@ -3,5 +3,14 @@
   "SITE_DESCRIPTION": "一个简洁、纯静态的个人导航站",
   "COPYRIGHT": "© 2025 <a href='https://github.com/verkyer/xg-nav' target='_blank'>XG-Nav</a>",
   "CARD_CONTENT": 0,
-  "SHOW_FAVICON": 1
+  "SHOW_FAVICON": 1,
+  "DEFAULT_ENGINE": "bing",
+  "SEARCH_ENGINES": [
+    { "name": "Bing", "engine": "bing", "url": "https://www.bing.com/search?q=" },
+    { "name": "百度", "engine": "baidu", "url": "https://www.baidu.com/s?wd=" },
+    { "name": "Google", "engine": "google", "url": "https://www.google.com/search?q=" },
+    { "name": "DuckDuckGo", "engine": "duckduckgo", "url": "https://duckduckgo.com/?q=" },
+    { "name": "GitHub", "engine": "github", "url": "https://github.com/search?q=" },
+    { "name": "Docker", "engine": "docker", "url": "https://hub.docker.com/search?q=" }
+  ]
 }

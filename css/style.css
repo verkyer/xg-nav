@@ -325,37 +325,37 @@ body::before {
   overflow: hidden;
   z-index: -1;
   background-image: 
-    url('../ico/bing.png'),
-    url('../ico/baidu.png'),
-    url('../ico/google.png'),
-    url('../ico/duckduckgo.png'),
-    url('../ico/github.png'),
-    url('../ico/docker.png');
+    url('../assets/search/bing.png'),
+    url('../assets/search/baidu.png'),
+    url('../assets/search/google.png'),
+    url('../assets/search/duckduckgo.png'),
+    url('../assets/search/github.png'),
+    url('../assets/search/docker.png');
 }
 
 /* 搜索引擎图标 */
 .search-engine-select[value="bing"] {
-  background-image: url('../ico/bing.png');
+  background-image: url('../assets/search/bing.png');
 }
 
 .search-engine-select[value="baidu"] {
-  background-image: url('../ico/baidu.png');
+  background-image: url('../assets/search/baidu.png');
 }
 
 .search-engine-select[value="google"] {
-  background-image: url('../ico/google.png');
+  background-image: url('../assets/search/google.png');
 }
 
 .search-engine-select[value="duckduckgo"] {
-  background-image: url('../ico/duckduckgo.png');
+  background-image: url('../assets/search/duckduckgo.png');
 }
 
 .search-engine-select[value="github"] {
-  background-image: url('../ico/github.png');
+  background-image: url('../assets/search/github.png');
 }
 
 .search-engine-select[value="docker"] {
-  background-image: url('../ico/docker.png');
+  background-image: url('../assets/search/docker.png');
 }
 
 .search-engine-select:after {
@@ -653,6 +653,11 @@ li a:hover {
 
 /* 当隐藏favicon时，完全隐藏favicon容器 */
 body.hide-favicon .favicon-container {
+  display: none;
+}
+
+/* 当单条链接未设置图标时，隐藏该项的图标容器 */
+li.no-icon .favicon-container {
   display: none;
 }
 
