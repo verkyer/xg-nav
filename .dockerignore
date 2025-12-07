@@ -1,0 +1,7 @@
+.git
+.trae/
+.github/
+docker-compose.yml
+README.md
+.gitignore
+**/*.md

@@ -6,8 +6,9 @@ WORKDIR /usr/share/nginx/html
 # 复制项目文件到nginx默认目录
 COPY . .
 
-# 创建links.txt备份文件，用于Docker启动时复制
-RUN cp /usr/share/nginx/html/data/links.txt /usr/share/nginx/html/data/links.txt.backup
+# 备份数据文件（存在才备份，避免构建失败）
+RUN [ -f /usr/share/nginx/html/data/links.txt ] && cp /usr/share/nginx/html/data/links.txt /usr/share/nginx/html/data/links.txt.backup || true
+RUN [ -f /usr/share/nginx/html/data/links.yaml ] && cp /usr/share/nginx/html/data/links.yaml /usr/share/nginx/html/data/links.yaml.backup || true
 
 # 删除静态config.json文件，避免与环境变量冲突
 RUN rm -f /usr/share/nginx/html/config.json
