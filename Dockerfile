@@ -10,6 +10,9 @@ COPY . .
 RUN [ -f /usr/share/nginx/html/data/links.txt ] && cp /usr/share/nginx/html/data/links.txt /usr/share/nginx/html/data/links.txt.backup || true
 RUN [ -f /usr/share/nginx/html/data/links.yaml ] && cp /usr/share/nginx/html/data/links.yaml /usr/share/nginx/html/data/links.yaml.backup || true
 
+# 使用自定义 nginx 配置，允许访问 .yaml
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # 删除静态config.json文件，避免与环境变量冲突
 RUN rm -f /usr/share/nginx/html/config.json
 
