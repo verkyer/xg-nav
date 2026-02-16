@@ -139,7 +139,7 @@ function render(list) {
     for (let i = 0; i < links.length; i++) {
       const link = links[i];
       sections.push(
-        '<li data-url="', link.url, '">',
+        '<li data-url="', link.url, '" data-icon="', link.icon || '', '">',
         '<a href="', link.url, '" target="_blank" rel="noopener" class="card-title">',
         '<div class="favicon-container">',
         '<img class="favicon" src="" alt="">',
@@ -162,7 +162,7 @@ function render(list) {
   }
   
   // 异步加载favicon图标
-  loadFavicons(list);
+  loadFavicons();
 }
 
 // 处理卡片点击
@@ -294,25 +294,44 @@ function setupSearch() {
   });
   
   const initialSaved = localStorage.getItem('searchEngine');
+  let saved = null;
+  
   if (initialSaved) {
     try {
-      const saved = JSON.parse(initialSaved);
-      const savedOption = Array.from(searchEngineSelect.options).find(option => option.value === saved.engine);
-      if (savedOption) {
-        searchEngineSelect.value = saved.engine;
-        searchEngineSelect.setAttribute('value', saved.engine);
-        currentSearchEngine = saved;
-      }
+      saved = JSON.parse(initialSaved);
     } catch (_) {}
   }
-  if (!searchEngineSelect.value) {
+
+  if (saved) {
+    const savedOption = Array.from(searchEngineSelect.options).find(option => option.value === saved.engine);
+    if (savedOption) {
+      searchEngineSelect.value = saved.engine;
+      searchEngineSelect.setAttribute('value', saved.engine);
+      currentSearchEngine = saved;
+    }
+  } else {
+    // 如果没有保存的设置，使用默认配置
     const def = siteConfig.DEFAULT_ENGINE || 'bing';
-    const defOption = Array.from(searchEngineSelect.options).find(option => option.value === def) || searchEngineSelect.options[0];
+    const defOption = Array.from(searchEngineSelect.options).find(option => option.value === def);
+    
     if (defOption) {
       searchEngineSelect.value = defOption.value;
       searchEngineSelect.setAttribute('value', defOption.value);
-      const sel = engines.find(e => e.engine === defOption.value) || engines[0];
-      currentSearchEngine = { name: sel.name, engine: sel.engine, url: sel.url };
+      
+      const sel = engines.find(e => e.engine === defOption.value);
+      if (sel) {
+        currentSearchEngine = { name: sel.name, engine: sel.engine, url: sel.url };
+      }
+    } else {
+      // 最后的兜底，使用第一个选项
+      const firstOption = searchEngineSelect.options[0];
+      if (firstOption) {
+        searchEngineSelect.value = firstOption.value;
+        searchEngineSelect.setAttribute('value', firstOption.value);
+        
+        const sel = engines[0];
+        currentSearchEngine = { name: sel.name, engine: sel.engine, url: sel.url };
+      }
     }
   }
   
@@ -412,38 +431,7 @@ function isValidURL(string) {
   }
 }
 
-// 异步加载favicon图标
-function loadFavicons(links) {
-  // 检查是否启用favicon显示
-  if (siteConfig.SHOW_FAVICON === 0) {
-    // 如果禁用favicon，给body添加hide-favicon类来隐藏所有favicon容器
-    document.body.classList.add('hide-favicon');
-    return;
-  } else {
-    // 如果启用favicon，确保移除hide-favicon类
-    document.body.classList.remove('hide-favicon');
-  }
-  
-  // 延迟加载favicon，避免影响页面初始渲染
-  setTimeout(() => {
-    const faviconElements = document.querySelectorAll('.favicon');
-    const linkElements = document.querySelectorAll('a[href]');
-    
-    linkElements.forEach((linkElement, index) => {
-      const url = linkElement.getAttribute('href');
-      const faviconImg = linkElement.querySelector('.favicon');
-      
-      if (url && faviconImg) {
-        // 从URL中提取域名
-        const domain = extractDomain(url);
-        if (domain) {
-          // 首选使用Yandex favicon服务
-          tryLoadYandexFavicon(faviconImg, domain);
-        }
-      }
-    });
-  }, 100); // 延迟100ms加载
-}
+
 
 // 尝试加载Yandex favicon，检测1x1像素图片
 function tryLoadYandexFavicon(faviconImg, domain) {
@@ -562,7 +550,7 @@ function normalizeUrl(u) {
 }
 
 // 加载自定义图标或回退到favicon
-function loadFavicons(list) {
+function loadFavicons() {
   if (siteConfig.SHOW_FAVICON === 0) {
     document.body.classList.add('hide-favicon');
     return;
@@ -570,13 +558,15 @@ function loadFavicons(list) {
     document.body.classList.remove('hide-favicon');
   }
   setTimeout(() => {
-    const linkElements = document.querySelectorAll('a[href]');
-    linkElements.forEach((linkElement, index) => {
-      const url = linkElement.getAttribute('href');
-      const faviconImg = linkElement.querySelector('.favicon');
+    // 改为查询li元素，直接从data-icon获取图标配置，不再依赖index
+    const listElements = document.querySelectorAll('li[data-url]');
+    listElements.forEach((li) => {
+      const url = li.dataset.url;
+      const iconSpec = li.dataset.icon;
+      const faviconImg = li.querySelector('.favicon');
+      
       if (!faviconImg) return;
-      const linkData = list[index];
-      const iconSpec = (linkData && linkData.icon) || undefined;
+      
       if (iconSpec) {
         resolveIconToImg(faviconImg, iconSpec, url);
       } else {
