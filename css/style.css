@@ -1,41 +1,47 @@
 /* CSS变量定义 - 简约风格 */
 :root {
-  --bg-start: #f5f5f5;
-  --bg-end: #f0f0f0;
-  --card-bg: rgba(255, 255, 255, 0.95);
-  --card-border: rgba(220, 220, 220, 0.5);
-  --card-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --card-shadow-hover: 0 3px 6px -1px rgba(0, 0, 0, 0.1);
-  --text: #333333;
-  --subtext: #666666;
-  --accent: #555555;
-  --link: #555555;
-  --link-hover: #000000;
-  --btn-bg: rgba(255, 255, 255, .9);
-  --btn-bg-hover: rgba(255, 255, 255, 1);
-  --btn-icon: #555555;
-  --btn-shadow: 0 1px 3px rgba(0, 0, 0, .05);
-  --btn-shadow-hover: 0 2px 5px rgba(0, 0, 0, .08);
+  --bg-start: #f7f8fa;
+  --bg-end: #f2f4f7;
+  --card-bg: rgba(255, 255, 255, 0.82);
+  --card-border: rgba(15, 23, 42, 0.10);
+  --card-shadow: 0 1px 1px rgba(15, 23, 42, 0.04), 0 10px 30px rgba(15, 23, 42, 0.06);
+  --card-shadow-hover: 0 2px 2px rgba(15, 23, 42, 0.06), 0 18px 48px rgba(15, 23, 42, 0.10);
+  --text: #0f172a;
+  --subtext: #475569;
+  --accent: #4f46e5;
+  --link: #4f46e5;
+  --link-hover: #4338ca;
+  --accent-border: rgba(79, 70, 229, 0.40);
+  --on-accent: #ffffff;
+  --btn-bg: rgba(255, 255, 255, 0.70);
+  --btn-bg-hover: rgba(255, 255, 255, 0.92);
+  --btn-icon: rgba(15, 23, 42, 0.72);
+  --btn-shadow: 0 1px 1px rgba(15, 23, 42, 0.05), 0 10px 30px rgba(15, 23, 42, 0.08);
+  --btn-shadow-hover: 0 2px 2px rgba(15, 23, 42, 0.07), 0 18px 48px rgba(15, 23, 42, 0.12);
+  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
 /* 深色主题 - 简约风格 */
 [data-theme="dark"] {
-  --bg-start: #222222;
-  --bg-end: #1a1a1a;
-  --card-bg: rgba(40, 40, 40, 0.95);
-  --card-border: rgba(60, 60, 60, 0.5);
-  --card-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-  --card-shadow-hover: 0 3px 6px -1px rgba(0, 0, 0, 0.3);
-  --text: #e0e0e0;
-  --subtext: #aaaaaa;
-  --accent: #bbbbbb;
-  --link: #bbbbbb;
-  --link-hover: #ffffff;
-  --btn-bg: rgba(40, 40, 40, 0.9);
-  --btn-bg-hover: rgba(50, 50, 50, 1);
-  --btn-icon: #bbbbbb;
-  --btn-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --btn-shadow-hover: 0 2px 5px rgba(0, 0, 0, 0.3);
+  --bg-start: #0b1220;
+  --bg-end: #070d19;
+  --card-bg: rgba(17, 24, 39, 0.82);
+  --card-border: rgba(148, 163, 184, 0.18);
+  --card-shadow: 0 1px 1px rgba(0, 0, 0, 0.25), 0 18px 60px rgba(0, 0, 0, 0.45);
+  --card-shadow-hover: 0 2px 2px rgba(0, 0, 0, 0.35), 0 24px 80px rgba(0, 0, 0, 0.55);
+  --text: #e5e7eb;
+  --subtext: #9ca3af;
+  --accent: rgba(165, 180, 252, 0.6);
+  --link: #a5b4fc;
+  --link-hover: #c7d2fe;
+  --accent-border: rgba(165, 180, 252, 0.34);
+  --on-accent: #0b1220;
+  --btn-bg: rgba(17, 24, 39, 0.70);
+  --btn-bg-hover: rgba(17, 24, 39, 0.92);
+  --btn-icon: rgba(229, 231, 235, 0.78);
+  --btn-shadow: 0 1px 1px rgba(0, 0, 0, 0.25), 0 18px 60px rgba(0, 0, 0, 0.45);
+  --btn-shadow-hover: 0 2px 2px rgba(0, 0, 0, 0.35), 0 24px 80px rgba(0, 0, 0, 0.55);
+  --focus-ring: 0 0 0 3px rgba(165, 180, 252, 0.18);
 }
 
 /* 基础样式重置 */
@@ -50,13 +56,15 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   background: linear-gradient(145deg, var(--bg-start) 0%, var(--bg-end) 100%);
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
   transition: background .3s ease, color .3s ease;
   overflow-y: scroll;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* 简约滚动条样式 */
@@ -143,6 +151,9 @@ header .subtitle {
   box-shadow: var(--btn-shadow);
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
   font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 #theme-toggle {
@@ -168,6 +179,13 @@ header .subtitle {
   box-shadow: var(--btn-shadow-hover);
 }
 
+#theme-toggle:focus-visible,
+#back-to-top:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), var(--btn-shadow-hover);
+  border-color: var(--accent-border);
+}
+
 /* 主内容区域 */
 main {
   max-width: 1400px;
@@ -189,7 +207,7 @@ main {
 .spinner {
   width: 30px;
   height: 30px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--card-border);
   border-radius: 50%;
   border-top-color: var(--text);
   animation: spin 0.8s linear infinite;
@@ -211,7 +229,7 @@ main {
 
 .error-message button {
   background: var(--link);
-  color: white;
+  color: var(--on-accent);
   border: none;
   padding: 0.5rem 1.2rem;
   border-radius: 6px;
@@ -230,7 +248,7 @@ footer {
   padding: 2.5rem 1.5rem;
   font-size: 0.85rem;
   color: var(--subtext);
-  opacity: 0.5;
+  opacity: 0.65;
 }
 
 footer a {
@@ -258,10 +276,10 @@ footer a:hover {
   grid-template-columns: auto 1fr auto;
   max-width: 480px;
   margin: 0 auto 1rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  border-radius: 12px;
   overflow: hidden;
-  background: #fff;
+  background: var(--card-bg);
   border: 1px solid var(--card-border);
   height: 44px;
   align-items: center;
@@ -269,27 +287,26 @@ footer a:hover {
 
 [data-theme="dark"] .search-box {
   background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  box-shadow: var(--card-shadow);
 }
 
 [data-theme="dark"] .search-box:hover {
-  border-color: var(--subtext);
+  border-color: var(--accent-border);
 }
 
 .search-box:hover {
-  border-color: var(--subtext);
+  border-color: var(--accent-border);
 }
 
 .search-box:focus-within {
-  border-color: var(--text);
+  border-color: var(--accent);
+  box-shadow: var(--card-shadow-hover);
 }
 
 /* 搜索引擎选择器 */
 .search-engine-select {
   background: transparent;
   border: none;
-  border-radius: 8px 0 0 8px;
+  border-radius: 12px 0 0 12px;
   padding: 0 4px;
   min-width: 60px;
   width: 60px;
@@ -365,7 +382,7 @@ body::before {
   top: 50%;
   transform: translateY(-50%);
   font-size: 10px;
-  color: #9aa0a6;
+  color: rgba(71, 85, 105, 0.7);
   pointer-events: none;
 }
 
@@ -386,26 +403,26 @@ body::before {
 }
 
 .search-engine-select:hover {
-  background-color: rgba(60, 64, 67, 0.08);
+  background-color: rgba(15, 23, 42, 0.06);
 }
 
 .search-engine-select:focus {
-  background-color: rgba(60, 64, 67, 0.12);
+  background-color: rgba(15, 23, 42, 0.10);
 }
 
 .search-engine-select option {
-    background: #fff;
-    color: #3c4043;
-    padding: 12px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    border: none;
-    text-align: center;
-    border-radius: 8px;
-    margin: 2px 4px;
-    transition: all 0.2s ease;
-    min-width: 120px;
-  }
+  background: #fff;
+  color: #0f172a;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  text-align: center;
+  border-radius: 8px;
+  margin: 2px 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  min-width: 120px;
+}
 
 [data-theme="dark"] .search-engine-select option {
   background: var(--card-bg);
@@ -413,14 +430,13 @@ body::before {
 }
 
 .search-engine-select option:hover {
-  background: #e3f2fd;
-  color: #1976d2;
-  transform: translateY(-1px);
+  background: rgba(15, 23, 42, 0.06);
+  color: #0f172a;
 }
 
 [data-theme="dark"] .search-engine-select option:hover {
-  background: rgba(96, 165, 250, 0.1);
-  color: var(--link);
+  background: rgba(148, 163, 184, 0.10);
+  color: var(--text);
 }
 
 /* 搜索输入区域 */
@@ -451,7 +467,7 @@ body::before {
 }
 
 .search-input::placeholder {
-  color: rgba(154, 160, 166, 0.7);
+  color: rgba(71, 85, 105, 0.55);
   font-weight: 400;
   font-size: 13px;
 }
@@ -461,7 +477,7 @@ body::before {
 }
 
 [data-theme="dark"] .search-input::placeholder {
-  color: rgba(148, 163, 184, 0.6);
+  color: rgba(156, 163, 175, 0.55);
 }
 
 /* 搜索清空按钮 */
@@ -524,7 +540,7 @@ body::before {
   background: transparent;
   color: var(--subtext);
   border: none;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 12px 12px 0;
   cursor: pointer;
   font-weight: 400;
   font-size: 14px;
@@ -586,14 +602,15 @@ section {
 }
 
 section h2 {
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
   padding-bottom: 0.8rem;
   margin-bottom: 1.2rem;
   border-bottom: 1px solid var(--card-border);
-  color: var(--text);
+  color: var(--subtext);
   display: flex;
   align-items: center;
+  letter-spacing: -0.2px;
 }
 
 /* 链接网格 */
@@ -610,10 +627,11 @@ ul {
 li {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 0.7rem 0.9rem;
   box-shadow: var(--card-shadow);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  /* 优化光晕效果：使用伪元素实现 spotlight */
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -621,11 +639,12 @@ li {
 
 li:hover {
   box-shadow: var(--card-shadow-hover);
-  border-color: var(--link);
+  border-color: var(--accent);
+  z-index: 5;
 }
 
 li a {
-  color: var(--link);
+  color: var(--text);
   text-decoration: none;
   font-weight: 600;
   font-size: 1rem;
@@ -636,10 +655,17 @@ li a {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.1px;
 }
 
 li a:hover {
   color: var(--link-hover);
+}
+
+li:focus-within {
+  box-shadow: var(--focus-ring), var(--card-shadow-hover);
+  border-color: var(--accent-border);
+  outline: none;
 }
 
 .favicon-container {
