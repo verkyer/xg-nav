@@ -1,6 +1,6 @@
 services:
   xg-nav:
-    image: ghcr.io/verkyer/nav:latest
+    build: .
     container_name: xg-nav
     ports:
       - "26180:80"  # 可自定义端口
@@ -13,4 +13,4 @@ services:
     restart: unless-stopped
     volumes:
       - ./data:/usr/share/nginx/html/data
-      - ./ico:/usr/share/nginx/html/ico  # 用户自定义图标目录
+    #  - ./ico:/usr/share/nginx/html/ico  # 用户自定义图标目录

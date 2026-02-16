@@ -14,10 +14,10 @@
   huanhq:
     url: https://www.huanhq.com
     desc: 技术大佬的blog
+    icon: # 留空使用默认 favicon
   hicane:
     url: https://hicane.com
     desc: Cane's Blog
-    icon: # 留空使用默认 favicon
 
 购物:
   淘宝:

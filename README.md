@@ -87,9 +87,13 @@ docker run -d \
 
 **配置优先级**：环境变量 > config.json > 内置默认值
 
-## 链接管理（YAML v2）
+## 链接管理
 
-推荐使用 `data/links.yaml`，以“分类”为键，字段更短：
+本项目支持 **YAML** (推荐) 和 **TXT** 两种配置格式。数据文件位于 `data/` 目录下。
+
+### 1. YAML 格式（推荐）
+
+编辑 `data/links.yaml`，结构清晰，支持更多特性（如自定义图标）：
 
 ```yaml
 博客:
@@ -110,9 +114,26 @@ docker run -d \
     # icon 留空 → 使用默认 favicon
 ```
 
-- 链接值为字符串表示仅 URL；对象可写 `url/desc/icon`
-- 不写 `icon` → 使用 favicon 自动抓取
-- URL 不含协议 → 自动补 `http://`
+- **特性**：
+  - 链接值为字符串表示仅 URL；对象可写 `url/desc/icon`
+  - 不写 `icon` → 使用 favicon 自动抓取
+  - URL 不含协议 → 自动补 `http://`
+
+### 2. TXT 格式（简单）
+
+编辑 `data/links.txt`，适合快速添加，格式为 CSV：`标题,描述,URL,分类`。
+
+```txt
+小鸽志,个人技术博客分享,https://www.xiaoge.org,博客
+DockerApps,Docker应用程序集合,https://dockerapps.com,博客
+淘宝,中国最大购物平台,https://www.taobao.com,购物
+```
+
+- **注意**：
+  - 使用英文逗号 `,` 分隔
+  - 如果缺失分类，默认为"未分类"
+  - **Docker环境**：启动时会自动将 `.txt` 转换为 `.yaml` 以提升性能。
+  - **纯静态环境**：如果加载 `.yaml` 失败，前端会自动尝试加载 `.txt`。
 
 **兼容迁移**：若存在旧版 `links.txt`，容器首次启动会自动转换为上述结构。
 
