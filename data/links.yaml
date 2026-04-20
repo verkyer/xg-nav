@@ -1,39 +1,74 @@
-博客:
-  小鸽志: 
+My Server:
+  小鸽志:
     url: https://www.xiaoge.org
-    desc: 个人技术博客分享
-    icon: # 留空则使用默认的 favicon（Yandex）
+    desc: 分享折腾的乐趣！
+    icon: https://icon.xiaoge.org/images/website/XiaoGe.png
+  XG-Nav:
+    url: https://nav.xiaoge.de
+    desc: 纯静态导航项目
+    icon: emoji:🧭
+  XG-icons:
+    url: https://icon.xiaoge.org
+    desc: 站长重置的高清图标库
+    icon: https://favicon.yandex.net/favicon/icon.xiaoge.org
+  VPS 剩余价值:
+    url: https://vps-jsq.xiaoge.de
+    desc: 买卖 VPS 必备
+    icon: emoji:🐔
+  背景移除:
+    url: https://remove-bg.xiaoge.org
+    desc: 智能移除图片背景
+    icon: https://remove-bg.xiaoge.org/favicon.ico
+Blog:
   DockerApps:
     url: https://dockerapps.com
     desc: Docker应用程序集合
-    icon: emoji:🐳 #可以使用emoji
-  GitHub:
-    url: https://github.com
-    desc: 全球最大的代码托管平台
-    icon: github #使用本地图标 在/ico目录下，可以不用精确文件名
-  huanhq:
+    icon: emoji:🐳
+  磕巴白菜:
+    url: https://hi.keba.host/
+    desc: 别管 不听 就是玩
+    icon: https://www.google.com/s2/favicons?sz=64&domain=hi.keba.host
+  HuanHQ:
     url: https://www.huanhq.com
     desc: 技术大佬的blog
-    icon: # 留空使用默认 favicon
-  hicane:
+  Cane's Blog:
     url: https://hicane.com
-    desc: Cane's Blog
-
-购物:
-  淘宝:
-    url: https://www.taobao.com
-    desc: 中国最大购物平台
-    icon: url:https://www.taobao.com/favicon.ico # 远程图片
-  京东:
-    url: jd.com
-    icon: url:https://www.jd.com/favicon.ico
-    desc: 中国最大购物平台
-  Amazon:
-    url: https://www.amazon.com
-    desc: 全球最大购物平台
-  天猫:
-    url: https://www.tmall.com
-    desc: 品牌商城购物平台
-  拼多多:
-    url: https://www.pinduoduo.com
-    desc: 社交电商购物平台
+    desc: 兴趣是最好的老师。
+    icon: https://favicon.yandex.net/favicon/hicane.com
+  Anyeの小站:
+    url: https://www.anye.xyz
+    desc: Always Nurturing Your Enthusiasm
+    icon: https://favicon.yandex.net/favicon/www.anye.xyz
+MJJ:
+  NodeSeek:
+    url: https://www.nodeseek.com/
+    desc: VPS 相关交流社区
+    icon: https://favicon.yandex.net/favicon/www.nodeseek.com
+  Hostloc:
+    url: https://hostloc.com/
+    desc: 全球主机交流论坛
+    icon: https://favicon.yandex.net/favicon/hostloc.com
+  lowendtalk:
+    url: https://lowendtalk.com/
+    desc: LET 主机论坛（全球最大）
+    icon: https://favicon.yandex.net/favicon/lowendtalk.com
+  ITDOG:
+    url: https://www.itdog.cn/
+    desc: 在线 Ping 工具
+    icon: https://www.itdog.cn/favicon.ico
+  Ping.pe:
+    url: https://ping.pe/
+    desc: 全球ping测工具
+    icon: emoji:⚡
+  IPLark:
+    url: https://iplark.com/
+    desc: 查看本机IP
+    icon: https://iplark.com/favicon.ico
+  Seek.li:
+    url: https://seek.li/
+    desc: NS 邮箱服务
+    icon: https://seek.li/favicon.png
+  哪吒配置生成:
+    url: https://nzcfg.pages.dev/
+    desc: 在线配置生成
+    icon: https://nezha.wiki/logo.png

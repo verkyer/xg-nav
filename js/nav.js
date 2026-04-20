@@ -14,7 +14,7 @@ async function loadSiteConfig() {
   const defaultConfig = {
     SITE_TITLE: 'XG🧭导航',
     SITE_DESCRIPTION: '一个简洁、纯静态的个人导航站',
-    COPYRIGHT: '© 2025 <a href="https://github.com/verkyer/xg-nav" target="_blank">XG-Nav</a>',
+    COPYRIGHT: '© 2026 <a href="https://github.com/verkyer/xg-nav" target="_blank">XG-Nav</a> | <a href="editor.html">Editor</a>',
     CARD_CONTENT: 0,
     SHOW_FAVICON: 1
   };
@@ -433,9 +433,9 @@ function isValidURL(string) {
 
 
 
-// 尝试加载Yandex favicon，检测1x1像素图片
-function tryLoadYandexFavicon(faviconImg, domain) {
-  const faviconUrl = `https://favicon.yandex.net/favicon/${domain}`;
+// 尝试加载favicon（国内可用服务），检测1x1像素图片
+function tryLoadFavicon(faviconImg, domain) {
+  const faviconUrl = `https://api.iowen.cn/favicon/${domain}.png`;
   const img = new Image();
   
   img.onload = function() {
@@ -451,7 +451,7 @@ function tryLoadYandexFavicon(faviconImg, domain) {
   };
   
   img.onerror = function() {
-    // Yandex服务失败，显示emoji图标
+    // favicon服务失败，显示emoji图标
     showEmojiIcon(faviconImg);
   };
   
@@ -571,7 +571,7 @@ function loadFavicons() {
         resolveIconToImg(faviconImg, iconSpec, url);
       } else {
         const domain = extractDomain(url);
-        if (domain) tryLoadYandexFavicon(faviconImg, domain);
+        if (domain) tryLoadFavicon(faviconImg, domain);
       }
     });
   }, 100);

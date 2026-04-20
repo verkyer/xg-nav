@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="XG导航 可视化编辑器">
+<title>导航编辑器</title>
+
+<style>
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f7f8fa;color:#0f172a;transition:background-color .3s,color .3s}
+:root{--bg-color:#f7f8fa;--text-color:#0f172a;--border-color:#e2e8f0;--card-bg:rgba(255,255,255,0.82)}
+[data-theme="dark"]{--bg-color:#0b1220;--text-color:#e5e7eb;--border-color:#1e293b;--card-bg:rgba(17,24,39,0.82)}
+</style>
+
+<link rel="stylesheet" href="css/editor.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+</head>
+<body>
+
+<!-- ========== 工具栏 ========== -->
+<div class="toolbar">
+  <div class="toolbar-title">
+    🧭 导航编辑器
+    <a href="index.html">← 返回导航</a>
+  </div>
+  <div class="toggle-btn-group" id="toggle-desc-url">
+    <button class="toggle-btn active" data-mode="desc">📝 描述</button>
+    <button class="toggle-btn" data-mode="url">🌐 网址</button>
+  </div>
+  <button class="btn" id="btn-import">📥 导入</button>
+  <button class="btn" id="btn-export">📋 导出</button>
+  <button class="btn btn-icon" id="theme-toggle" title="切换主题">🌗</button>
+</div>
+
+<!-- ========== 主编辑区 ========== -->
+<div class="editor-main">
+  <div id="groups-container"></div>
+  <button class="add-group-btn" id="add-group-btn">＋ 添加分组</button>
+</div>
+
+<!-- ========== Toast ========== -->
+<div class="toast" id="toast"></div>
+
+<!-- ========== 导入 YAML 模态框 ========== -->
+<div class="modal-overlay" id="import-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">导入 YAML</span>
+      <button class="modal-close import-close-btn" title="关闭">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:0.82rem;color:var(--subtext);margin-bottom:0.65rem">
+        粘贴 <code>links.yaml</code> 或 <code>links.txt</code> 内容，解析后将替换当前编辑器中的所有数据。
+      </p>
+      <textarea class="form-input yaml-textarea" id="yaml-textarea" placeholder="在此粘贴 YAML 或 TXT 内容…" spellcheck="false"></textarea>
+    </div>
+    <div class="modal-footer import-modal-footer">
+      <button class="btn" id="btn-fetch-default">📂 获取默认</button>
+      <div class="modal-footer-right">
+        <button class="btn import-close-btn">取消</button>
+        <button class="btn btn-accent" id="import-confirm">解析并导入</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 导出 YAML 模态框 ========== -->
+<div class="modal-overlay" id="export-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">导出 YAML</span>
+      <div class="modal-header-actions">
+        <button class="modal-close" id="export-fullscreen" title="全屏">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 6 2 2 6 2"/><polyline points="10 2 14 2 14 6"/>
+            <polyline points="14 10 14 14 10 14"/><polyline points="6 14 2 14 2 10"/>
+          </svg>
+        </button>
+        <button class="modal-close" id="export-close" title="关闭">✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <textarea class="form-input yaml-textarea" id="export-textarea" readonly spellcheck="false"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="export-copy">📋 复制</button>
+      <button class="btn btn-accent" id="export-download">💾 下载 links.yaml</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 添加/编辑导航 模态框 ========== -->
+<div class="modal-overlay" id="item-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="item-modal-title">添加导航</span>
+      <button class="modal-close" id="item-modal-close" title="关闭">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- URL -->
+      <div class="form-group">
+        <label class="form-label">网址 URL</label>
+        <div class="form-input-row">
+          <input class="form-input" id="item-url" type="url" placeholder="https://example.com" spellcheck="false">
+          <button class="btn btn-accent fetch-btn" id="fetch-info-btn" type="button">获取信息</button>
+        </div>
+      </div>
+
+      <!-- 名称 -->
+      <div class="form-group">
+        <label class="form-label">名称</label>
+        <input class="form-input" id="item-name" type="text" placeholder="网站名称">
+      </div>
+
+      <!-- 描述 -->
+      <div class="form-group">
+        <label class="form-label">描述</label>
+        <input class="form-input" id="item-desc" type="text" placeholder="网站描述（可选）">
+      </div>
+
+      <!-- 图标 -->
+      <div class="form-group">
+        <label class="form-label">图标</label>
+
+        <div class="icon-mode-tabs">
+          <button type="button" class="icon-mode-tab active" data-mode="url">网址 / 本地</button>
+          <button type="button" class="icon-mode-tab" data-mode="emoji">Emoji</button>
+        </div>
+
+        <!-- URL 模式 -->
+        <div class="icon-url-section active">
+          <input class="form-input" id="item-icon-url" type="text" placeholder="url:https://… 或 本地图标名（如 github）或留空" spellcheck="false">
+          <div id="favicon-candidates" class="favicon-candidates"></div>
+        </div>
+
+        <!-- Emoji 模式 -->
+        <div class="icon-emoji-section">
+          <input class="form-input emoji-search" id="emoji-search" type="text" placeholder="搜索 Emoji…">
+          <div class="emoji-grid" id="emoji-grid"></div>
+          <input class="form-input" id="emoji-input" type="text" placeholder="已选 Emoji（可手动输入）" style="margin-top:0.5rem">
+        </div>
+
+        <!-- 图标预览 -->
+        <div class="icon-preview-area" id="icon-preview">
+          <span class="icon-preview-label">无图标</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn" id="item-cancel">取消</button>
+      <button class="btn btn-accent" id="item-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 底部版权 ========== -->
+<footer>
+  <small>© 2026 <a href="https://github.com/verkyer/xg-nav" target="_blank">XG-Nav</a></small>
+</footer>
+
+<!-- ========== 外部库（已本地化） ========== -->
+<script src="lib/js-yaml.min.js"></script>
+<script src="lib/Sortable.min.js"></script>
+<script src="js/editor.js"></script>
+</body>
+</html>
