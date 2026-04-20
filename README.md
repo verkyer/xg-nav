@@ -2,6 +2,8 @@
 
 一个简洁、纯HTML静态的个人导航站，支持深浅色切换和多搜索引擎。
 
+![demo](demo.png)
+
 内置了可视化编辑器，访问 `/editor.html` 即可快速配置。
 
 - 在线体验：[nav.xiaoge.de/editor.html](https://nav.xiaoge.de/editor.html)
