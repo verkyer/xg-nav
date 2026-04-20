@@ -1,6 +1,7 @@
 # XG-Nav 导航站
 
 一个简洁、纯HTML静态的个人导航站，支持深浅色切换和多搜索引擎。
+内置可视化编辑器，访问 `/editor.html` 即可管理导航链接，在线体验：[nav.xiaoge.de/editor.html](https://nav.xiaoge.de/editor.html)
 
 ## 功能特性
 
@@ -181,6 +182,9 @@ DockerApps,Docker应用程序集合,https://dockerapps.com,博客
 部署完成后，访问 `http://localhost:26180` 即可使用导航站。
 
 ## 更新日志
+
+### v1.2.0 (2026.04.20)
+- ✨ 新增可视化编辑器（`editor.html`），支持在线生成和编辑 YAML 配置文件
 
 ### v1.1.0 (2025.12.07)
 - 调整目录结构：内置搜索引擎图标迁移至 `assets/search/`，`ico/` 作为用户自定义图标目录
