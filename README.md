@@ -1,7 +1,10 @@
 # XG-Nav 导航站
 
 一个简洁、纯HTML静态的个人导航站，支持深浅色切换和多搜索引擎。
-内置可视化编辑器，访问 `/editor.html` 即可管理导航链接，在线体验：[nav.xiaoge.de/editor.html](https://nav.xiaoge.de/editor.html)
+
+内置了可视化编辑器，访问 `/editor.html` 即可快速配置。
+
+- 在线体验：[nav.xiaoge.de/editor.html](https://nav.xiaoge.de/editor.html)
 
 ## 功能特性
 
