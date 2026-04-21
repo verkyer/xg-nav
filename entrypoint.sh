@@ -21,6 +21,8 @@ cat > /usr/share/nginx/html/config.json << EOF
 EOF
 
 mkdir -p /usr/share/nginx/html/data
+mkdir -p /usr/share/nginx/html/ico
+
 # 优先保证 links.yaml 存在；若不存在且存在 links.txt，进行转换为 YAML v2（分类为键）
 if [ ! -f "/usr/share/nginx/html/data/links.yaml" ]; then
   if [ -f "/usr/share/nginx/html/data/links.yaml.backup" ]; then

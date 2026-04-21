@@ -106,15 +106,17 @@ docker run -d \
   小鸽志:
     url: https://www.xiaoge.org
     desc: 个人技术博客分享
+    icon: https://www.xiaoge.org/favicon.png  # 远程图标URL
   DockerApps:
     url: https://dockerapps.com
     desc: Docker应用程序集合
-    icon: emoji:🐳
+    icon: emoji:🐳 # emoji
 
 购物:
   淘宝:
     url: https://www.taobao.com
     desc: 中国最大购物平台
+    icon: taobao.png  # 本地图标（放在 ico/ 目录下）
   京东:
     url: jd.com
     # icon 留空 → 使用默认 favicon
@@ -187,6 +189,9 @@ DockerApps,Docker应用程序集合,https://dockerapps.com,博客
 部署完成后，访问 `http://localhost:26180` 即可使用导航站。
 
 ## 更新日志
+
+### v1.2.1 (2026.04.21)
+- 🐛 修复填写'icon'路径下图标无法正确显示问题
 
 ### v1.2.0 (2026.04.20)
 - ✨ 新增可视化编辑器（`editor.html`），支持在线生成和编辑 YAML 配置文件

@@ -603,44 +603,49 @@ function resolveIconToImg(img, iconSpec, linkUrl) {
       showEmojiCustom(img, m[1]);
       return;
     }
-    if (!s.includes('/') && !/\.(png|svg|ico|jpg)$/i.test(s) && s.length <= 4) {
+    if (!s.includes('/') && !/\.(png|svg|ico|jpg|jpeg|webp|gif)$/i.test(s) && s.length <= 4) {
       // 简单判断为 emoji
       showEmojiCustom(img, s);
       return;
     }
   }
-  // remote url or domain/path
-  if (s.includes('/') || s.includes('.')) {
-    const isRemote = s.startsWith('http://') || s.startsWith('https://') || /\w+\./.test(s);
-    const src = isRemote ? normalizeUrl(s) : s;
-    if (isRemote) {
-      img.src = src;
-      img.classList.add('loaded');
-      return;
-    }
-  }
-  // local name or file
-  const name = s;
-  const hasExt = /\.(png|svg|ico|jpg)$/i.test(name);
-  if (hasExt) {
-    img.src = 'ico/' + name;
+
+  const imgExtRe = /\.(png|svg|ico|jpg|jpeg|webp|gif)$/i;
+  const hasSlash = s.includes('/');
+  const hasImgExt = imgExtRe.test(s);
+
+  // 本地文件优先：无斜杠 + 带图片扩展名 → ico/<name>
+  if (!hasSlash && hasImgExt) {
+    img.src = 'ico/' + s;
     img.classList.add('loaded');
     return;
   }
+
+  // 远程 URL 或带路径
+  if (hasSlash || /^https?:\/\//i.test(s)) {
+    const isRemote = s.startsWith('http://') || s.startsWith('https://') || /\w+\./.test(s.split('/')[0]);
+    const src = isRemote && !s.startsWith('http') ? normalizeUrl(s) : s;
+    img.src = src;
+    img.classList.add('loaded');
+    return;
+  }
+
+  // 本地名（无扩展名）：依次尝试常见扩展
+  const name = s;
   const exts = ['png', 'svg', 'ico', 'jpg'];
-  for (let i = 0; i < exts.length; i++) {
-    const candidate = 'ico/' + name + '.' + exts[i];
-    // 尝试加载，失败则继续
+  let idx = 0;
+  const tryNext = () => {
+    if (idx >= exts.length) return;
+    const candidate = 'ico/' + name + '.' + exts[idx++];
     const test = new Image();
     test.onload = () => {
       img.src = candidate;
       img.classList.add('loaded');
     };
-    test.onerror = () => {};
+    test.onerror = tryNext;
     test.src = candidate;
-    // 找到第一个成功的即可
-    break;
-  }
+  };
+  tryNext();
 }
 
 function showEmojiCustom(faviconImg, emoji) {

@@ -654,6 +654,82 @@ textarea.form-input {
   white-space: nowrap;
 }
 
+/* ========== 本地图标选择器 ========== */
+.local-icon-picker {
+  margin-top: 0.5rem;
+}
+.local-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--btn-bg);
+}
+.local-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.4rem 0.25rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--card-bg);
+  cursor: pointer;
+  transition: all .15s;
+  font-family: inherit;
+  overflow: hidden;
+}
+.local-icon-item:hover {
+  border-color: var(--accent-border);
+}
+.local-icon-item.selected {
+  border-color: var(--link);
+  background: rgba(79, 70, 229, 0.08);
+}
+[data-theme="dark"] .local-icon-item.selected {
+  background: rgba(165, 180, 252, 0.1);
+}
+.local-icon-item img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: transparent;
+}
+.local-icon-item span {
+  font-size: 0.66rem;
+  color: var(--subtext);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.1;
+}
+.local-icon-empty {
+  margin-top: 0.4rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.75rem;
+  color: var(--subtext);
+  border: 1px dashed var(--card-border);
+  border-radius: 8px;
+  background: var(--btn-bg);
+}
+.local-icon-empty code {
+  padding: 0.05rem 0.3rem;
+  background: rgba(0,0,0,0.05);
+  border-radius: 4px;
+  font-size: 0.72rem;
+}
+[data-theme="dark"] .local-icon-empty code {
+  background: rgba(255,255,255,0.08);
+}
+
 /* ========== Emoji 选择器 ========== */
 .emoji-search {
   margin-bottom: 0.5rem;

@@ -129,13 +129,13 @@ body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",
 
         <!-- URL 模式 -->
         <div class="icon-url-section active">
-          <input class="form-input" id="item-icon-url" type="text" placeholder="url:https://… 或 本地图标名（如 github）或留空" spellcheck="false">
+          <input class="form-input" id="item-icon-url" type="text" placeholder="https://….png 或 本地图标名（如 github.png）或留空" spellcheck="false">
+          <div id="local-icon-picker" class="local-icon-picker"></div>
           <div id="favicon-candidates" class="favicon-candidates"></div>
         </div>
 
         <!-- Emoji 模式 -->
         <div class="icon-emoji-section">
-          <input class="form-input emoji-search" id="emoji-search" type="text" placeholder="搜索 Emoji…">
           <div class="emoji-grid" id="emoji-grid"></div>
           <input class="form-input" id="emoji-input" type="text" placeholder="已选 Emoji（可手动输入）" style="margin-top:0.5rem">
         </div>

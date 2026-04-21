@@ -55,7 +55,7 @@ MJJ:
   ITDOG:
     url: https://www.itdog.cn/
     desc: 在线 Ping 工具
-    icon: https://www.itdog.cn/favicon.ico
+    icon: https://icon.xiaoge.org/images/website/itdog.png
   Ping.pe:
     url: https://ping.pe/
     desc: 全球ping测工具
@@ -67,8 +67,12 @@ MJJ:
   Seek.li:
     url: https://seek.li/
     desc: NS 邮箱服务
-    icon: https://seek.li/favicon.png
+    icon: emoji:📧
   哪吒配置生成:
     url: https://nzcfg.pages.dev/
     desc: 在线配置生成
     icon: https://nezha.wiki/logo.png
+  github:
+    url: https://github.com
+    desc: 全球最大代码托管
+    icon: github.png
