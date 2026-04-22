@@ -31,7 +31,12 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,san
 
 <div class="search-container">
   <div class="search-box">
-    <select class="search-engine-select" id="search-engine-select"></select>
+    <button type="button" class="search-engine-trigger" id="search-engine-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="选择搜索引擎">
+      <span class="search-engine-trigger-icon" id="search-engine-trigger-icon"></span>
+      <svg class="search-engine-trigger-caret" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
+        <path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
     <div class="search-input-area">
       <input type="text" class="search-input" id="search-input" placeholder="搜索或输入网址..." autocomplete="off">
       <button class="search-clear" id="search-clear" aria-label="清空搜索">
@@ -46,6 +51,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,san
       </svg>
     </button>
   </div>
+  <div class="search-engine-dropdown" id="search-engine-dropdown" role="listbox" aria-label="搜索引擎列表" hidden></div>
   <div class="search-results-count" id="search-results-count"></div>
 </div><main id="nav-container"><div class="loading">⚡ 加载中...</div></main><footer><small></small></footer>
 

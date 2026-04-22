@@ -251,93 +251,147 @@ function setupSearch() {
     (domCache.searchButton = document.getElementById('search-button'));
   const searchResultsCount = domCache.searchResultsCount || 
     (domCache.searchResultsCount = document.getElementById('search-results-count'));
-  const searchEngineSelect = domCache.searchEngineSelect || 
-    (domCache.searchEngineSelect = document.getElementById('search-engine-select'));
+  const engineTrigger = domCache.engineTrigger ||
+    (domCache.engineTrigger = document.getElementById('search-engine-trigger'));
+  const engineTriggerIcon = domCache.engineTriggerIcon ||
+    (domCache.engineTriggerIcon = document.getElementById('search-engine-trigger-icon'));
+  const engineDropdown = domCache.engineDropdown ||
+    (domCache.engineDropdown = document.getElementById('search-engine-dropdown'));
   const searchClear = domCache.searchClear || 
     (domCache.searchClear = document.getElementById('search-clear'));
-  
-  while (searchEngineSelect.firstChild) searchEngineSelect.removeChild(searchEngineSelect.firstChild);
+
   const engines = Array.isArray(siteConfig.SEARCH_ENGINES) && siteConfig.SEARCH_ENGINES.length > 0
     ? siteConfig.SEARCH_ENGINES
     : [
         { name: 'Bing', engine: 'bing', url: 'https://www.bing.com/search?q=' },
         { name: '百度', engine: 'baidu', url: 'https://www.baidu.com/s?wd=' },
         { name: 'Google', engine: 'google', url: 'https://www.google.com/search?q=' },
-        { name: 'DuckDuckGo', engine: 'duckduckgo', url: 'https://duckduckgo.com/?q=' },
+        { name: 'DDG', engine: 'duckduckgo', url: 'https://duckduckgo.com/?q=' },
         { name: 'GitHub', engine: 'github', url: 'https://github.com/search?q=' },
         { name: 'Docker', engine: 'docker', url: 'https://hub.docker.com/search?q=' }
       ];
+
+  // 构建下拉列表
+  const list = document.createElement('div');
+  list.className = 'search-engine-list';
   for (let i = 0; i < engines.length; i++) {
-    const opt = document.createElement('option');
-    opt.value = engines[i].engine;
-    opt.textContent = engines[i].name;
-    opt.dataset.url = engines[i].url;
-    searchEngineSelect.appendChild(opt);
+    const e = engines[i];
+    const item = document.createElement('button');
+    item.type = 'button';
+    item.className = 'search-engine-item';
+    item.setAttribute('role', 'option');
+    item.dataset.engine = e.engine;
+    item.dataset.url = e.url;
+    item.dataset.name = e.name;
+    item.title = e.name;
+
+    const icon = document.createElement('span');
+    icon.className = 'search-engine-item-icon';
+    icon.style.backgroundImage = `url('assets/search/${e.engine}.png')`;
+
+    const name = document.createElement('span');
+    name.className = 'search-engine-item-name';
+    name.textContent = e.name;
+
+    item.appendChild(icon);
+    item.appendChild(name);
+    list.appendChild(item);
+  }
+  engineDropdown.innerHTML = '';
+  engineDropdown.appendChild(list);
+
+  function applyEngine(engine) {
+    currentSearchEngine = { name: engine.name, engine: engine.engine, url: engine.url };
+    localStorage.setItem('searchEngine', JSON.stringify(currentSearchEngine));
+    engineTriggerIcon.style.backgroundImage = `url('assets/search/${engine.engine}.png')`;
+    engineTrigger.setAttribute('aria-label', `选择搜索引擎，当前：${engine.name}`);
+    engineTrigger.title = engine.name;
+    // 更新激活状态
+    const items = engineDropdown.querySelectorAll('.search-engine-item');
+    items.forEach(it => {
+      it.classList.toggle('active', it.dataset.engine === engine.engine);
+    });
   }
 
-  // 搜索引擎切换
-  searchEngineSelect.addEventListener('change', (e) => {
-    const selectedOption = e.target.selectedOptions[0];
-    currentSearchEngine = {
-      name: selectedOption.textContent,
-      engine: selectedOption.value,
-      url: selectedOption.dataset.url
+  function openDropdown() {
+    engineDropdown.hidden = false;
+    // 强制 reflow 后再加 visible，触发过渡
+    void engineDropdown.offsetWidth;
+    engineDropdown.classList.add('visible');
+    engineTrigger.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeDropdown() {
+    engineDropdown.classList.remove('visible');
+    engineTrigger.setAttribute('aria-expanded', 'false');
+    // 等过渡结束再 hidden，避免可访问性树残留
+    setTimeout(() => {
+      if (!engineDropdown.classList.contains('visible')) {
+        engineDropdown.hidden = true;
+      }
+    }, 200);
+  }
+
+  function toggleDropdown() {
+    if (engineDropdown.classList.contains('visible')) {
+      closeDropdown();
+    } else {
+      openDropdown();
+    }
+  }
+
+  engineTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown();
+  });
+
+  engineDropdown.addEventListener('click', (e) => {
+    const item = e.target.closest('.search-engine-item');
+    if (!item) return;
+    const engine = {
+      name: item.dataset.name,
+      engine: item.dataset.engine,
+      url: item.dataset.url
     };
-    
-    // 保存搜索引擎设置到localStorage
-    localStorage.setItem('searchEngine', JSON.stringify(currentSearchEngine));
-    
-    // 更新搜索引擎选择器的背景图标
-    searchEngineSelect.setAttribute('value', selectedOption.value);
-    
+    applyEngine(engine);
+    closeDropdown();
     searchInput.focus();
   });
-  
+
+  // 点击外部关闭
+  document.addEventListener('click', (e) => {
+    if (!engineDropdown.classList.contains('visible')) return;
+    if (engineDropdown.contains(e.target) || engineTrigger.contains(e.target)) return;
+    closeDropdown();
+  });
+
+  // ESC 关闭
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && engineDropdown.classList.contains('visible')) {
+      closeDropdown();
+      engineTrigger.focus();
+    }
+  });
+
+  // 初始化当前引擎
   const initialSaved = localStorage.getItem('searchEngine');
   let saved = null;
-  
   if (initialSaved) {
-    try {
-      saved = JSON.parse(initialSaved);
-    } catch (_) {}
+    try { saved = JSON.parse(initialSaved); } catch (_) {}
   }
 
+  let initial = null;
   if (saved) {
-    const savedOption = Array.from(searchEngineSelect.options).find(option => option.value === saved.engine);
-    if (savedOption) {
-      searchEngineSelect.value = saved.engine;
-      searchEngineSelect.setAttribute('value', saved.engine);
-      currentSearchEngine = saved;
-    }
-  } else {
-    // 如果没有保存的设置，使用默认配置
-    const def = siteConfig.DEFAULT_ENGINE || 'bing';
-    const defOption = Array.from(searchEngineSelect.options).find(option => option.value === def);
-    
-    if (defOption) {
-      searchEngineSelect.value = defOption.value;
-      searchEngineSelect.setAttribute('value', defOption.value);
-      
-      const sel = engines.find(e => e.engine === defOption.value);
-      if (sel) {
-        currentSearchEngine = { name: sel.name, engine: sel.engine, url: sel.url };
-      }
-    } else {
-      // 最后的兜底，使用第一个选项
-      const firstOption = searchEngineSelect.options[0];
-      if (firstOption) {
-        searchEngineSelect.value = firstOption.value;
-        searchEngineSelect.setAttribute('value', firstOption.value);
-        
-        const sel = engines[0];
-        currentSearchEngine = { name: sel.name, engine: sel.engine, url: sel.url };
-      }
-    }
+    initial = engines.find(e => e.engine === saved.engine);
   }
-  
-  // 恢复保存的搜索引擎选择
-  
-  
+  if (!initial) {
+    const def = siteConfig.DEFAULT_ENGINE || 'bing';
+    initial = engines.find(e => e.engine === def) || engines[0];
+  }
+  if (initial) {
+    applyEngine(initial);
+  }
+
   // 搜索按钮点击
   searchButton.addEventListener('click', () => performSearch());
   
